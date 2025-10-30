@@ -38,6 +38,13 @@ a3ret a3spatialPoseBlendTreeCreate(a3_SpatialPoseBlendTree* blendTree, a3_Hierar
 {
 	if (!blendTree || !blendTreeDescriptor)
 		return -1;
+
+	blendTree->blendTreeDescriptor = blendTreeDescriptor;
+
+	a3ui32 dataSize = sizeof(a3_SpatialPoseBlendNode) * blendTreeDescriptor->numNodes;
+	blendTree->nodes = (a3_SpatialPoseBlendNode*)malloc(dataSize);
+	memset(blendTree->nodes, 0, dataSize);
+
 	return 0;
 }
 
@@ -46,9 +53,15 @@ a3ret a3spatialPoseBlendTreeRelease(a3_SpatialPoseBlendTree* blendTree)
 {
 	if (!blendTree)
 		return -1;
+
+	if (blendTree->nodes)
+	{
+		free(blendTree->nodes);
+		blendTree->nodes = 0;
+	}
+
 	return 0;
 }
-
 // configure node internally; set pointers
 a3ret a3spatialPoseBlendTreeConfigureNode(a3_SpatialPoseBlendTree const* blendTree, a3ui32 const nodeIndex)
 {
