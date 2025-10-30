@@ -84,11 +84,13 @@ a3real4r a3blendOpRET4(a3real4 v_out)
 
 a3real4r a3blendOpZERO4(a3real4 v_out)
 {
+	a3real4Set(v_out, 0, 0, 0, 0);
 	return v_out;
 }
 
 a3real4r a3blendOpONE4(a3real4 v_out)
 {
+	a3real4Set(v_out, 1, 1, 1, 1);
 	return v_out;
 }
 
