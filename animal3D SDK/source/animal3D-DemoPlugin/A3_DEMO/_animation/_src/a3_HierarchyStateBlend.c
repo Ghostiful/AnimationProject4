@@ -87,29 +87,29 @@ a3ret a3spatialPoseBlendTreeExecute(a3_SpatialPoseBlendTree const* blendTree)
 
 	for (a3ui32 i = 0; i < blendTree->blendTreeDescriptor->numNodes; i++) 
 	{
-		a3_BlendOp* op;
+		a3_BlendOp op;
 
 		// set inputs
 		for (int j = 0; j < blendTree->nodes[i].uCount; j++)
 		{
-			op->u[j] = blendTree->nodes[i].u[j];
+			op.u[j] = blendTree->nodes[i].u[j];
 		}
-		op->uCount = blendTree->nodes[i].uCount;
+		op.uCount = blendTree->nodes[i].uCount;
 
 		// repeat these
-		op->op = blendTree->nodes[i].blendOpSet->op_rotate;
-		op->v_out = &blendTree->nodes[i].pose_out->rotate.r;
+		op.op = blendTree->nodes[i].blendOpSet->op_rotate;
+		op.v_out = &blendTree->nodes[i].pose_out->rotate.r;
 
 		// set controls
 		for (int j = 0; j < blendTree->nodes[i].vCount; j++)
 		{
-			op->v_ctrl[j] = &blendTree->nodes[i].pose_ctrl[j]->rotate.x;
+			op.v_ctrl[j] = &blendTree->nodes[i].pose_ctrl[j]->rotate.x;
 		}
-		op->vCount = blendTree->nodes[i].vCount;
+		op.vCount = blendTree->nodes[i].vCount;
 
 		
 		
-		op->exec = blendTree->nodes[i].blendOpSet->exec;
+		op.exec = blendTree->nodes[i].blendOpSet->exec;
 		blendTree->nodes[i].blendOpSet->exec(&op);
 
 	}
