@@ -67,9 +67,6 @@ a3ret a3spatialPoseBlendTreeConfigureNode(a3_SpatialPoseBlendTree const* blendTr
 {
 	if (!blendTree)
 		return -1;
-	
-	//blendTree->nodes[nodeIndex].blendOpSet.
-
 	return 0;
 }
 
@@ -81,7 +78,31 @@ a3ret a3spatialPoseBlendTreeExecute(a3_SpatialPoseBlendTree const* blendTree)
 
 	for (int i = 0; i < blendTree->blendTreeDescriptor->numNodes; i++) 
 	{
-		blendTree->nodes[i].blendOpSet->exec;
+		a3_BlendOp* op;
+
+		// set inputs
+		for (int j = 0; j < blendTree->nodes[i].uCount; j++)
+		{
+			op->u[j] = blendTree->nodes[i].u[j];
+		}
+		op->uCount = blendTree->nodes[i].uCount;
+
+		// repeat these
+		op->op = blendTree->nodes[i].blendOpSet->op_rotate;
+		op->v_out = &blendTree->nodes[i].pose_out->rotate.r;
+
+		// set controls
+		for (int j = 0; j < blendTree->nodes[i].vCount; j++)
+		{
+			op->v_ctrl[j] = &blendTree->nodes[i].pose_ctrl[j]->rotate.x;
+		}
+		op->vCount = blendTree->nodes[i].vCount;
+
+		
+		
+		op->exec = blendTree->nodes[i].blendOpSet->exec;
+		blendTree->nodes[i].blendOpSet->exec(&op);
+
 	}
 
 	return 0;
@@ -109,16 +130,19 @@ a3real4r a3blendOpONE4(a3real4 v_out)
 
 a3real4r a3blendOpID4(a3real4 v_out)
 {
+	a3real4Set(v_out, 0, 0, 0, 1);
 	return v_out;
 }
 
 a3real4r a3blendOpCOPY4(a3real4 v_out, a3real4 const v)
 {
+	a3real4SetReal4(v_out, v);
 	return v_out;
 }
 
 a3real4r a3blendOpNEGATE4(a3real4 v_out, a3real4 const v)
 {
+	a3real4Set(v_out, 0 - v[0], 0 - v[1], 0 - v[2], v[3]);
 	return v_out;
 }
 
@@ -184,6 +208,14 @@ a3real4r a3blendOpPOW4(a3real4 v_out, a3real4 const v, a3real const u)
 
 a3real4r a3blendOpNEAR4(a3real4 v_out, a3real4 const v0, a3real4 const v1, a3real const u)
 {
+	if (u < 0.5f)
+	{
+		a3real4SetReal4(v_out, v0);
+	}
+	else
+	{
+		a3real4SetReal4(v_out, v1);
+	}
 	return v_out;
 }
 
