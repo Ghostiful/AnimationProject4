@@ -24,6 +24,9 @@
 
 #include "../a3_HierarchyStateBlend.h"
 #include <math.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 
 
 //-----------------------------------------------------------------------------
@@ -63,12 +66,15 @@ a3ret a3spatialPoseBlendTreeRelease(a3_SpatialPoseBlendTree* blendTree)
 	return 0;
 }
 // configure node internally; set pointers
-a3ret a3spatialPoseBlendTreeConfigureNode(a3_SpatialPoseBlendTree const* blendTree, a3ui32 const nodeIndex)
+a3ret a3spatialPoseBlendTreeConfigureNode(a3_SpatialPoseBlendTree const* blendTree, a3ui32 const nodeIndex, a3_SpatialPose* outPose, a3_SpatialPose const* pose1, a3_SpatialPose const* pose2, const a3_BlendOpSet* blendOp)
 {
 	if (!blendTree)
 		return -1;
 	
-	//blendTree->nodes[nodeIndex].blendOpSet.
+	blendTree->nodes[nodeIndex].pose_out = outPose;
+	blendTree->nodes[nodeIndex].pose_ctrl[0] = pose1;
+	blendTree->nodes[nodeIndex].pose_ctrl[1] = pose2;
+	blendTree->nodes[nodeIndex].blendOpSet = blendOp;
 
 	return 0;
 }
@@ -79,7 +85,7 @@ a3ret a3spatialPoseBlendTreeExecute(a3_SpatialPoseBlendTree const* blendTree)
 	if (!blendTree)
 		return -1;
 
-	for (int i = 0; i < blendTree->blendTreeDescriptor->numNodes; i++) 
+	for (a3ui32 i = 0; i < blendTree->blendTreeDescriptor->numNodes; i++) 
 	{
 		blendTree->nodes[i].blendOpSet->exec;
 	}
@@ -175,7 +181,7 @@ a3real4r a3blendOpSCALE4(a3real4 v_out, a3real4 const v, a3real const u)
 
 a3real4r a3blendOpPOW4(a3real4 v_out, a3real4 const v, a3real const u)
 {
-	a3real4Set(v_out, pow(v[0], u), pow(v[1], u), pow(v[2], u), v[3]);
+	a3real4Set(v_out, (a3real)pow(v[0], u), (a3real)pow(v[1], u), (a3real)pow(v[2], u), v[3]);
 	
 	return v_out;
 }

@@ -217,6 +217,8 @@ extern "C"
 			};
 		};
 		a3_HierarchyDisplayData display_tree[5];
+
+		a3_SpatialPoseBlendTree spatialPoseBlendTree;
 		
 		// blend operations
 		a3_BlendOpSet blendOpID[1], blendOpRET[1], blendOpCOPY[1], blendOpINV[1],

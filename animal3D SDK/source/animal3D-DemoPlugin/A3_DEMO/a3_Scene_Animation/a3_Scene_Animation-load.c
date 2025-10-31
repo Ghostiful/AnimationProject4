@@ -714,6 +714,17 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_Scene_Animatio
 		hierarchyState->hierarchy = 0;
 		a3hierarchyStateCreate(hierarchyState, hierarchy);
 	}
+
+	a3spatialPoseBlendTreeCreate(&scene->spatialPoseBlendTree, scene->hierarchyState_skel_blend_result->hierarchy);
+
+	for (a3ui32 i = 0; i < scene->hierarchyState_skel_blend_result->hierarchy->numNodes; i++)
+	{
+		a3spatialPoseBlendTreeConfigureNode(&scene->spatialPoseBlendTree, i,
+			&scene->hierarchyState_skel_blend_result->hpose->hpose_base[i],
+			&scene->hierarchyState_skel_blend_idle_f->hpose->hpose_base[i],
+			&scene->hierarchyState_skel_blend_idle_m->hpose->hpose_base[i],
+			scene->blendOpLERP);
+	}
 	
 	// control node
 	scene->obj_skeleton_ctrl->euler.z = a3real_oneeighty;
