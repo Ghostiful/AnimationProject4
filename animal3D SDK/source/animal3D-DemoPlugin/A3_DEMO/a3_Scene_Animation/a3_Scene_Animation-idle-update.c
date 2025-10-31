@@ -241,6 +241,8 @@ void a3animation_update_animation_skeletal(
 		activeHS_fk->hierarchy->numNodes);
 	a3kinematicsUpdateHierarchyStateFK(activeHS_fk, baseHS, poseGroup);
 
+	a3spatialPoseBlendTreeExecute(&scene->spatialPoseBlendTree);
+
 	// resolve final IK state
 	// copy FK result to IK to begin IK pipeline
 	// all joints not affected by IK will match FK state

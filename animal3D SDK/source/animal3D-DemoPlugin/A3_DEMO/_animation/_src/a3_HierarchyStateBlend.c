@@ -89,12 +89,8 @@ a3ret a3spatialPoseBlendTreeExecute(a3_SpatialPoseBlendTree const* blendTree)
 	{
 		a3_BlendOp op;
 
-		// set inputs
-		for (int j = 0; j < blendTree->nodes[i].uCount; j++)
-		{
-			op.u[j] = blendTree->nodes[i].u[j];
-		}
-		op.uCount = blendTree->nodes[i].uCount;
+		blendTree->nodes[i].uCount = 1;
+
 
 		// repeat these
 		op.op = blendTree->nodes[i].blendOpSet->op_rotate;
@@ -107,7 +103,12 @@ a3ret a3spatialPoseBlendTreeExecute(a3_SpatialPoseBlendTree const* blendTree)
 		}
 		op.vCount = blendTree->nodes[i].vCount;
 
-		
+		// set inputs
+		for (int j = 0; j < blendTree->nodes[i].uCount; j++)
+		{
+			op.u[j] = blendTree->nodes[i].u[j];
+		}
+		op.uCount = blendTree->nodes[i].uCount;
 		
 		op.exec = blendTree->nodes[i].blendOpSet->exec;
 		blendTree->nodes[i].blendOpSet->exec(&op);
