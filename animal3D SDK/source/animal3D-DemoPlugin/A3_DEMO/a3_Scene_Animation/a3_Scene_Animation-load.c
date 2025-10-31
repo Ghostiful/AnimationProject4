@@ -715,6 +715,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_Scene_Animatio
 		a3hierarchyStateCreate(hierarchyState, hierarchy);
 	}
 
+	// create blend tree
 	a3spatialPoseBlendTreeCreate(&scene->spatialPoseBlendTree, scene->hierarchyState_skel_blend_result->hierarchy);
 
 	for (a3ui32 i = 0; i < scene->hierarchyState_skel_blend_result->hierarchy->numNodes; i++)

@@ -417,7 +417,9 @@ a3_SpatialPose* a3spatialPoseOpIdentity(a3_SpatialPose* pose_out)
 {
 	pose_out->transformMat = a3mat4_identity;
 	// ...
-
+	pose_out->translate = a3vec4_one;
+	pose_out->scale = a3vec4_one;
+	pose_out->rotate = a3vec4_one;
 	// done
 	return pose_out;
 }
@@ -425,7 +427,7 @@ a3_SpatialPose* a3spatialPoseOpIdentity(a3_SpatialPose* pose_out)
 // pointer-based LERP operation for single spatial pose
 a3_SpatialPose* a3spatialPoseOpLERP(a3_SpatialPose* pose_out, a3_SpatialPose const* pose0, a3_SpatialPose const* pose1, a3real const u)
 {
-
+	a3spatialPoseLerp(pose_out, pose0, pose1, u);
 	// done
 	return pose_out;
 }
@@ -436,15 +438,33 @@ a3_SpatialPose* a3spatialPoseOpLERP(a3_SpatialPose* pose_out, a3_SpatialPose con
 // pointer-based reset/identity operation for hierarchical pose
 a3_HierarchyPose* a3hierarchyPoseOpIdentity(a3_HierarchyPose* pose_out)
 {
-
+	pose_out->hpose_base->transformMat = a3mat4_identity;
+	pose_out->hpose_base->translate = a3vec4_one;
+	pose_out->hpose_base->scale = a3vec4_one;
+	pose_out->hpose_base->rotate = a3vec4_one;
 	// done
 	return pose_out;
 }
 
+extern float powf(float b, float e);
 // pointer-based LERP operation for hierarchical pose
 a3_HierarchyPose* a3hierarchyPoseOpLERP(a3_HierarchyPose* pose_out, a3_HierarchyPose const* pose0, a3_HierarchyPose const* pose1, a3real const u)
 {
+	pose_out->hpose_base->rotate.v[0] = (pose1->hpose_base->rotate.v[0] - pose0->hpose_base->rotate.v[0]) * u + pose0->hpose_base->rotate.v[0];
+	pose_out->hpose_base->rotate.v[1] = (pose1->hpose_base->rotate.v[1] - pose0->hpose_base->rotate.v[1]) * u + pose0->hpose_base->rotate.v[1];
+	pose_out->hpose_base->rotate.v[2] = (pose1->hpose_base->rotate.v[2] - pose0->hpose_base->rotate.v[2]) * u + pose0->hpose_base->rotate.v[2];
 
+	// scale: log-lerp
+	// to-do: check channels
+	pose_out->hpose_base->scale.v[0] = powf(pose1->hpose_base->scale.v[0] / pose0->hpose_base->scale.v[0], u) * pose0->hpose_base->scale.v[0];
+	pose_out->hpose_base->scale.v[1] = powf(pose1->hpose_base->scale.v[1] / pose0->hpose_base->scale.v[1], u) * pose0->hpose_base->scale.v[1];
+	pose_out->hpose_base->scale.v[2] = powf(pose1->hpose_base->scale.v[2] / pose0->hpose_base->scale.v[2], u) * pose0->hpose_base->scale.v[2];
+
+	// translate: lerp
+	// to-do: check channels
+	pose_out->hpose_base->translate.v[0] = (pose1->hpose_base->translate.v[0] - pose0->hpose_base->translate.v[0]) * u + pose0->hpose_base->translate.v[0];
+	pose_out->hpose_base->translate.v[1] = (pose1->hpose_base->translate.v[1] - pose0->hpose_base->translate.v[1]) * u + pose0->hpose_base->translate.v[1];
+	pose_out->hpose_base->translate.v[2] = (pose1->hpose_base->translate.v[2] - pose0->hpose_base->translate.v[2]) * u + pose0->hpose_base->translate.v[2];
 	// done
 	return pose_out;
 }
