@@ -223,6 +223,8 @@ void a3animation_update_animation_skeletal(
 	}
 
 	// do blending here
+	// 
+	a3spatialPoseBlendTreeExecute(&scene->spatialPoseBlendTree);
 	//	-> interpolate idle_f/idle_m -> idle_fm
 	//	-> interpolate idle_fm/idle_p -> result
 	a3hierarchyPoseLerp(scene->hierarchyState_skel_blend_idle_fm_blend->animPose,	// dst: idle_fm
@@ -241,7 +243,7 @@ void a3animation_update_animation_skeletal(
 		activeHS_fk->hierarchy->numNodes);
 	a3kinematicsUpdateHierarchyStateFK(activeHS_fk, baseHS, poseGroup);
 
-	a3spatialPoseBlendTreeExecute(&scene->spatialPoseBlendTree);
+
 
 	// resolve final IK state
 	// copy FK result to IK to begin IK pipeline

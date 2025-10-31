@@ -94,30 +94,32 @@ a3ret a3spatialPoseBlendTreeExecute(a3_SpatialPoseBlendTree const* blendTree)
 		blendTree->nodes[i].u[0] = &u;
 		blendTree->nodes[i].uCount = 1;
 
-		// repeat these
+		/// Rotation
 		op.op = blendTree->nodes[i].blendOpSet->op_rotate;
-		op.v_out = &blendTree->nodes[i].pose_out->rotate.r;
+		op.v_out = &blendTree->nodes[i].pose_out->rotate.x;
 
 		// set controls
-		for (int j = 0; j < blendTree->nodes[i].vCount; j++)
+		for (a3ui32 j = 0; j < blendTree->nodes[i].vCount; j++)
 		{
 			op.v_ctrl[j] = &blendTree->nodes[i].pose_ctrl[j]->rotate.x;
 		}
 		op.vCount = blendTree->nodes[i].vCount;
 
 		// set inputs
-		for (int j = 0; j < blendTree->nodes[i].uCount; j++)
+		for (a3ui32 j = 0; j < blendTree->nodes[i].uCount; j++)
 		{
 			op.u[j] = blendTree->nodes[i].u[j];
 		}
 		op.uCount = blendTree->nodes[i].uCount;
 		
+		// set the blend operation's execute to the node's execute
 		op.exec = blendTree->nodes[i].blendOpSet->exec;
+		// execute the blend operation
 		blendTree->nodes[i].blendOpSet->exec(&op);
 
-		// repeat these
+		/// Translation
 		op.op = blendTree->nodes[i].blendOpSet->op_translate;
-		op.v_out = &blendTree->nodes[i].pose_out->translate.r;
+		op.v_out = &blendTree->nodes[i].pose_out->translate.x;
 
 		// set controls
 		for (int j = 0; j < blendTree->nodes[i].vCount; j++)
@@ -133,12 +135,14 @@ a3ret a3spatialPoseBlendTreeExecute(a3_SpatialPoseBlendTree const* blendTree)
 		}
 		op.uCount = blendTree->nodes[i].uCount;
 
+		// set the blend operation's execute to the node's execute
 		op.exec = blendTree->nodes[i].blendOpSet->exec;
+		// execute the blend operation
 		blendTree->nodes[i].blendOpSet->exec(&op);
 
-		// repeat these
+		/// Scale
 		op.op = blendTree->nodes[i].blendOpSet->op_scale;
-		op.v_out = &blendTree->nodes[i].pose_out->scale.r;
+		op.v_out = &blendTree->nodes[i].pose_out->scale.x;
 
 		// set controls
 		for (int j = 0; j < blendTree->nodes[i].vCount; j++)
@@ -154,7 +158,9 @@ a3ret a3spatialPoseBlendTreeExecute(a3_SpatialPoseBlendTree const* blendTree)
 		}
 		op.uCount = blendTree->nodes[i].uCount;
 
+		// set the blend operation's execute to the node's execute
 		op.exec = blendTree->nodes[i].blendOpSet->exec;
+		// execute the blend operation
 		blendTree->nodes[i].blendOpSet->exec(&op);
 
 	}
@@ -260,6 +266,7 @@ a3real4r a3blendOpPOW4(a3real4 v_out, a3real4 const v, a3real const u)
 	return v_out;
 }
 
+// picks the real4 closest to the u value (like a lerp with a rounding function attached)
 a3real4r a3blendOpNEAR4(a3real4 v_out, a3real4 const v0, a3real4 const v1, a3real const u)
 {
 	if (u < 0.5f)
